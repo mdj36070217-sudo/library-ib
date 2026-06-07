@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IB MYP 학습자 도서관</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        'ib-navy': '#00294D',
+        'ib-blue': '#0057A8',
+        'ib-gold': '#F5A623',
+        'ib-teal': '#00897B',
+      }
+    }
+  }
+}
+</script>
+<style>
+html { scroll-behavior: smooth; }
+.hero-bg { background: linear-gradient(135deg, #00294D 0%, #0057A8 60%, #1a7fd4 100%); }
+.card-hover { transition: transform .2s, box-shadow .2s; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,.12); }
+.nav-ul a { position: relative; }
+.nav-ul a::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px; background:#F5A623; transition:width .2s; }
+.nav-ul a:hover::after { width:100%; }
+.modal-wrap { display:none; }
+.modal-wrap.open { display:flex; }
+.tab-btn { transition: background .15s, color .15s; }
+.tab-btn.active { background:#00294D; color:#fff; }
+.gc-panel { display:none; }
+.gc-panel.active { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.fade-up { animation: fadeUp .35s ease; }
+@keyframes secretBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.secret-show { animation: secretBounce 1s; }
+</style>
+</head>
+<body class="bg-gray-50">
+
+<!-- ══════════ NAV ══════════ -->
+<nav class="bg-ib-navy sticky top-0 z-50 shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
+    <a href="#home" class="flex items-center gap-2.5">
+      <div class="w-9 h-9 bg-ib-gold rounded-lg grid place-items-center text-xl">📚</div>
+      <div>
+        <div class="text-white font-extrabold text-sm leading-tight">IB MYP 학습자 도서관</div>
+        <div class="text-blue-300 text-xs">IB Learner Library</div>
+      </div>
+    </a>
+    <ul class="nav-ul hidden md:flex items-center gap-6 text-sm font-medium">
+      <li><a href="#subjects" class="text-blue-100 hover:text-white">과목 자료</a></li>
+      <li><a href="#ee" class="text-blue-100 hover:text-white">EE 센터</a></li>
+      <li><a href="#books" class="text-blue-100 hover:text-white">추천 도서</a></li>
+      <li><a href="#integrity" class="text-blue-100 hover:text-white">인용 생성기</a></li>
+      <li><a href="#global" class="text-blue-100 hover:text-white">세계적 맥락</a></li>
+      <li><a href="#quest" class="text-blue-100 hover:text-white">퀘스트</a></li>
+      <li><a href="#info" class="text-blue-100 hover:text-white">이용 안내</a></li>
+    </ul>
+    <button onclick="document.getElementById('mob-menu').classList.toggle('hidden')" class="md:hidden text-blue-200 hover:text-white">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="mob-menu" class="hidden md:hidden px-4 pb-3 border-t border-blue-800 pt-2 space-y-1">
+    <a href="#subjects" onclick="this.closest('#mob-menu').classList.add('hidden')" class="block text-blue-100 hover:text-white px-2 py-1.5 rounded text-sm">과목 자료</a>
+    <a href="#ee" onclick="this.closest('#mob-menu').classList.add('hidden')" class="block text-blue-100 hover:text-white px-2 py-1.5 rounded text-sm">EE 센터</a>
+    <a href="#books" onclick="this.closest('#mob-menu').classList.add('hidden')" class="block text-blue-100 hover:text-white px-2 py-1.5 rounded text-sm">추천 도서</a>
+    <a href="#integrity" onclick="this.closest('#mob-menu').classList.add('hidden')" class="block text-blue-100 hover:text-white px-2 py-1.5 rounded text-sm">인용 생성기</a>
+    <a href="#global" onclick="this.closest('#mob-menu').classList.add('hidden')" class="block text-blue-100 hover:text-white px-2 py-1.5 rounded text-sm">세계적 맥락</a>
+    <a href="#quest" onclick="this.closest('#mob-menu').classList.add('hidden')" class="block text-blue-100 hover:text-white px-2 py-1.5 rounded text-sm">퀘스트</a>
+    <a href="#info" onclick="this.closest('#mob-menu').classList.add('hidden')" class="block text-blue-100 hover:text-white px-2 py-1.5 rounded text-sm">이용 안내</a>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section id="home" class="hero-bg py-20 px-4">
+  <div class="max-w-4xl mx-auto text-center">
+    <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white px-4 py-1.5 rounded-full text-xs font-semibold mb-6">
+      🌍 IB Middle Years Programme · Extended Essay
+    </div>
+    <h1 class="text-4xl md:text-5xl font-black text-white leading-tight mb-4">
+      지식을 탐구하는<br><span class="text-ib-gold">MYP 학습자의 도서관</span>
+    </h1>
+    <p class="text-blue-100 text-lg mb-10 max-w-lg mx-auto">과목별 자료부터 EE 연구, 세계적 맥락별 추천 도서까지<br>IB 학습 여정을 함께합니다.</p>
+    <div class="max-w-2xl mx-auto">
+      <div class="flex gap-2 bg-white rounded-2xl p-2 shadow-2xl">
+        <input id="hero-q" type="text" placeholder="도서 제목, 과목, 키워드 검색…" class="flex-1 px-4 py-2.5 text-gray-700 bg-transparent rounded-xl text-sm outline-none focus:ring-2 focus:ring-ib-gold" onkeydown="if(event.key==='Enter')runSearch()">
+        <button onclick="runSearch()" class="bg-ib-gold hover:bg-yellow-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm">검색</button>
+      </div>
+      <div class="flex flex-wrap justify-center gap-2 mt-3">
+        <span class="text-blue-200 text-xs self-center">빠른 검색:</span>
+        <button onclick="qs('EE')" class="text-blue-100 hover:text-white bg-white/10 hover:bg-white/20 text-xs px-3 py-1 rounded-full">Extended Essay</button>
+        <button onclick="qs('사피엔스')" class="text-blue-100 hover:text-white bg-white/10 hover:bg-white/20 text-xs px-3 py-1 rounded-full">사피엔스</button>
+        <button onclick="qs('환경')" class="text-blue-100 hover:text-white bg-white/10 hover:bg-white/20 text-xs px-3 py-1 rounded-full">환경</button>
+        <button onclick="qs('정의')" class="text-blue-100 hover:text-white bg-white/10 hover:bg-white/20 text-xs px-3 py-1 rounded-full">공정성</button>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Search panel -->
+<div id="search-panel" class="hidden bg-white border-b shadow-md">
+  <div class="max-w-4xl mx-auto px-4 py-5">
+    <div class="flex justify-between items-center mb-3">
+      <p id="search-label" class="font-bold text-gray-800 text-sm"></p>
+      <button onclick="document.getElementById('search-panel').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 text-sm">닫기 ✕</button>
+    </div>
+    <div id="search-out" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+  </div>
+</div>
+
+<!-- ══════════ QUICK LINKS ══════════ -->
+<section class="bg-white border-b">
+  <div class="max-w-7xl mx-auto px-4 py-5">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <a href="#books" class="flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 rounded-xl transition group">
+        <div class="w-10 h-10 bg-blue-100 group-hover:bg-blue-200 rounded-lg grid place-items-center text-xl">📖</div>
+        <div><div class="font-bold text-gray-800 text-sm">추천 도서</div><div class="text-gray-500 text-xs">과목별 필독서</div></div>
+      </a>
+      <a href="#db" class="flex items-center gap-3 p-4 bg-green-50 hover:bg-green-100 rounded-xl transition group">
+        <div class="w-10 h-10 bg-green-100 group-hover:bg-green-200 rounded-lg grid place-items-center text-xl">🔍</div>
+        <div><div class="font-bold text-gray-800 text-sm">연구 데이터베이스</div><div class="text-gray-500 text-xs">학술 자료 검색</div></div>
+      </a>
+      <a href="#ee" class="flex items-center gap-3 p-4 bg-purple-50 hover:bg-purple-100 rounded-xl transition group">
+        <div class="w-10 h-10 bg-purple-100 group-hover:bg-purple-200 rounded-lg grid place-items-center text-xl">✍️</div>
+        <div><div class="font-bold text-gray-800 text-sm">EE 지원 센터</div><div class="text-gray-500 text-xs">논문 작성 가이드</div></div>
+      </a>
+      <a href="#integrity" class="flex items-center gap-3 p-4 bg-yellow-50 hover:bg-yellow-100 rounded-xl transition group">
+        <div class="w-10 h-10 bg-yellow-100 group-hover:bg-yellow-200 rounded-lg grid place-items-center text-xl">📝</div>
+        <div><div class="font-bold text-gray-800 text-sm">인용 생성기</div><div class="text-gray-500 text-xs">APA·MLA·Chicago</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SUBJECT GROUPS ══════════ -->
+<section id="subjects" class="py-16 px-4 bg-gray-50">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="text-ib-blue text-xs font-bold uppercase tracking-widest">Subject Groups</span>
+      <h2 class="text-3xl font-black text-gray-900 mt-2">IB 과목별 자료실</h2>
+      <p class="text-gray-500 mt-2 text-sm">6개 과목군별 추천 도서와 핵심 정보원을 탐색하세요</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="subject-cards"></div>
+  </div>
+</section>
+
+<!-- Subject modal -->
+<div id="subj-modal" class="modal-wrap fixed inset-0 bg-black/50 z-50 items-center justify-center p-4" onclick="if(event.target===this)closeSubjModal()">
+  <div class="bg-white rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl">
+    <div id="subj-modal-body" class="p-6"></div>
+    <div class="px-6 pb-6"><button onclick="closeSubjModal()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl">닫기</button></div>
+  </div>
+</div>
+
+<!-- ══════════ EE CENTRE ══════════ -->
+<section id="ee" class="py-16 px-4 bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="text-purple-600 text-xs font-bold uppercase tracking-widest">Extended Essay</span>
+      <h2 class="text-3xl font-black text-gray-900 mt-2">EE 지원 센터</h2>
+      <p class="text-gray-500 text-sm mt-2">독립 연구 논문 작성의 모든 단계를 안내합니다</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Steps -->
+      <div class="lg:col-span-2 bg-purple-50 rounded-2xl p-6 border border-purple-100">
+        <h3 class="font-bold text-purple-900 mb-5">📋 EE 단계별 로드맵</h3>
+        <div class="space-y-4">
+          <div class="flex gap-4"><div class="w-8 h-8 bg-purple-600 text-white rounded-full grid place-items-center font-black text-sm flex-shrink-0">1</div><div><div class="font-bold text-purple-900">과목 · 주제 선정</div><div class="text-purple-700 text-sm mt-0.5">지도 교사와 상담 후 연구 과목 및 대략적 주제 결정. 관심과 탐구 가능성을 기준으로 선택.</div></div></div>
+          <div class="flex gap-4"><div class="w-8 h-8 bg-purple-600 text-white rounded-full grid place-items-center font-black text-sm flex-shrink-0">2</div><div><div class="font-bold text-purple-900">연구 질문(RQ) 설정</div><div class="text-purple-700 text-sm mt-0.5">명확하고 탐구 가능한 연구 질문 작성. 너무 광범위하거나 사실 확인 수준의 질문은 피할 것.</div></div></div>
+          <div class="flex gap-4"><div class="w-8 h-8 bg-purple-600 text-white rounded-full grid place-items-center font-black text-sm flex-shrink-0">3</div><div><div class="font-bold text-purple-900">문헌 검토 · 자료 수집</div><div class="text-purple-700 text-sm mt-0.5">도서관 데이터베이스, 학술 저널, 신뢰할 수 있는 웹사이트 활용. 1차·2차 사료 구분 중요.</div></div></div>
+          <div class="flex gap-4"><div class="w-8 h-8 bg-purple-600 text-white rounded-full grid place-items-center font-black text-sm flex-shrink-0">4</div><div><div class="font-bold text-purple-900">개요 작성 · 초안</div><div class="text-purple-700 text-sm mt-0.5">서론 → 본론(분석/논거) → 결론 구조. 4,000단어 이내, 인용 형식 일관성 유지.</div></div></div>
+          <div class="flex gap-4"><div class="w-8 h-8 bg-purple-600 text-white rounded-full grid place-items-center font-black text-sm flex-shrink-0">5</div><div><div class="font-bold text-purple-900">성찰 세션 (RPPF)</div><div class="text-purple-700 text-sm mt-0.5">지도 교사와 3회 공식 성찰 세션. 연구 과정과 배움을 RPPF에 기록 (500단어 이내).</div></div></div>
+          <div class="flex gap-4"><div class="w-8 h-8 bg-purple-600 text-white rounded-full grid place-items-center font-black text-sm flex-shrink-0">6</div><div><div class="font-bold text-purple-900">최종 검토 · 제출</div><div class="text-purple-700 text-sm mt-0.5">표절 검사, 인용 점검, 단어 수 확인 후 마감일 전 제출. 학문적 진실성 준수 필수.</div></div></div>
+        </div>
+      </div>
+      <!-- Resources -->
+      <div class="space-y-4">
+        <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+          <h3 class="font-bold text-gray-900 mb-4">📁 도서관 EE 자료</h3>
+          <ul class="space-y-2.5">
+            <li class="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 rounded-lg p-2.5"><span>📄</span> EE 공식 가이드 (IB) <span class="ml-auto text-blue-500 text-xs cursor-pointer hover:underline" onclick="alert('사서 선생님께 문의하세요.')">요청</span></li>
+            <li class="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 rounded-lg p-2.5"><span>📄</span> 우수 EE 예시 모음집 <span class="ml-auto text-blue-500 text-xs cursor-pointer hover:underline" onclick="alert('사서 선생님께 문의하세요.')">요청</span></li>
+            <li class="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 rounded-lg p-2.5"><span>📄</span> APA·MLA 인용 핸드북 <span class="ml-auto text-blue-500 text-xs cursor-pointer hover:underline" onclick="alert('사서 선생님께 문의하세요.')">요청</span></li>
+            <li class="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 rounded-lg p-2.5"><span>📄</span> RPPF 작성 가이드 <span class="ml-auto text-blue-500 text-xs cursor-pointer hover:underline" onclick="alert('사서 선생님께 문의하세요.')">요청</span></li>
+            <li class="flex items-center gap-2 text-sm text-gray-700 bg-gray-50 rounded-lg p-2.5"><span>📄</span> 학술 데이터베이스 접속 목록 <span class="ml-auto text-blue-500 text-xs cursor-pointer hover:underline" onclick="alert('사서 선생님께 문의하세요.')">요청</span></li>
+          </ul>
+        </div>
+        <div class="bg-yellow-50 rounded-2xl p-5 border border-yellow-200">
+          <h3 class="font-bold text-yellow-900 mb-2">⚠️ 주요 규정</h3>
+          <ul class="space-y-1.5 text-sm text-yellow-800">
+            <li>• 최대 <strong>4,000단어</strong> (참고문헌·주석 제외)</li>
+            <li>• RPPF <strong>500단어</strong> 이내</li>
+            <li>• 공식 인용 형식 <strong>일관성</strong> 유지</li>
+            <li>• AI 생성 콘텐츠 무단 사용 <strong>금지</strong></li>
+            <li>• 표절 시 IB 성적 <strong>취소</strong> 가능</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FEATURED BOOKS ══════════ -->
+<section id="books" class="py-16 px-4 bg-gray-50">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex items-end justify-between mb-8 flex-wrap gap-3">
+      <div>
+        <span class="text-ib-gold text-xs font-bold uppercase tracking-widest">Featured Books</span>
+        <h2 class="text-3xl font-black text-gray-900 mt-1">이달의 추천 도서</h2>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button onclick="filterBooks('all')" id="fb-all" class="tab-btn active text-xs font-bold px-4 py-2 rounded-lg border border-gray-200">전체</button>
+        <button onclick="filterBooks('science')" id="fb-science" class="tab-btn text-xs font-bold px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50">과학</button>
+        <button onclick="filterBooks('humanities')" id="fb-humanities" class="tab-btn text-xs font-bold px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50">인문·사회</button>
+        <button onclick="filterBooks('ee')" id="fb-ee" class="tab-btn text-xs font-bold px-4 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50">EE 추천</button>
+      </div>
+    </div>
+    <div id="books-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5"></div>
+  </div>
+</section>
+
+<!-- ══════════ RESEARCH DATABASES ══════════ -->
+<section id="db" class="py-16 px-4 bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="text-green-600 text-xs font-bold uppercase tracking-widest">Research Tools</span>
+      <h2 class="text-3xl font-black text-gray-900 mt-2">연구 데이터베이스</h2>
+      <p class="text-gray-500 text-sm mt-2">EE와 내부 평가를 위한 신뢰할 수 있는 학술 자료</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 card-hover">
+        <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-blue-700 rounded-lg grid place-items-center text-white font-black text-xs">JSTOR</div><div><div class="font-bold text-gray-900 text-sm">JSTOR</div><div class="text-xs text-gray-500">학술 저널 아카이브</div></div></div>
+        <p class="text-sm text-gray-600 mb-3">인문·사회과학·자연과학 분야의 방대한 학술 저널과 논문.</p>
+        <div class="flex gap-1.5"><span class="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-full">무료 접속</span><span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">영어</span></div>
+      </div>
+      <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 card-hover">
+        <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-red-500 rounded-lg grid place-items-center text-white font-black text-xs">G·S</div><div><div class="font-bold text-gray-900 text-sm">Google Scholar</div><div class="text-xs text-gray-500">학술 검색 엔진</div></div></div>
+        <p class="text-sm text-gray-600 mb-3">전 세계 학술 논문, 학위논문, 도서를 무료로 검색·인용 확인.</p>
+        <div class="flex gap-1.5"><span class="bg-green-50 text-green-700 text-xs px-2 py-0.5 rounded-full">무료</span><span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">다국어</span></div>
+      </div>
+      <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 card-hover">
+        <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-green-700 rounded-lg grid place-items-center text-white font-black text-xs">RISS</div><div><div class="font-bold text-gray-900 text-sm">RISS</div><div class="text-xs text-gray-500">한국 학술 정보원</div></div></div>
+        <p class="text-sm text-gray-600 mb-3">국내 학위논문, 학술논문, 단행본 검색.</p>
+        <div class="flex gap-1.5"><span class="bg-green-50 text-green-700 text-xs px-2 py-0.5 rounded-full">무료</span><span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">한국어</span></div>
+      </div>
+      <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 card-hover">
+        <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-yellow-500 rounded-lg grid place-items-center text-white font-black text-xs">Khan</div><div><div class="font-bold text-gray-900 text-sm">Khan Academy</div><div class="text-xs text-gray-500">무료 온라인 학습</div></div></div>
+        <p class="text-sm text-gray-600 mb-3">수학·과학·역사 등 IB 핵심 과목 영상 학습.</p>
+        <div class="flex gap-1.5"><span class="bg-green-50 text-green-700 text-xs px-2 py-0.5 rounded-full">무료</span><span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">한국어·영어</span></div>
+      </div>
+      <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100 card-hover">
+        <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-purple-700 rounded-lg grid place-items-center text-white font-black text-xs">arXiv</div><div><div class="font-bold text-gray-900 text-sm">arXiv</div><div class="text-xs text-gray-500">과학 프리프린트</div></div></div>
+        <p class="text-sm text-gray-600 mb-3">물리·수학·컴퓨터과학·생물 최신 연구 무료 제공.</p>
+        <div class="flex gap-1.5"><span class="bg-green-50 text-green-700 text-xs px-2 py-0.5 rounded-full">무료</span><span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">영어</span></div>
+      </div>
+      <div class="bg-ib-navy rounded-2xl p-5 border border-blue-800 card-hover">
+        <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-ib-gold rounded-lg grid place-items-center text-ib-navy font-black text-xs">교내</div><div><div class="font-bold text-white text-sm">교내 전용 DB</div><div class="text-xs text-blue-300">사서 선생님 문의</div></div></div>
+        <p class="text-sm text-blue-100 mb-3">학교 도서관 전용 학술 데이터베이스. 사서 선생님께 접속 방법 문의.</p>
+        <div class="flex gap-1.5"><span class="bg-white/20 text-white text-xs px-2 py-0.5 rounded-full">교내 접속</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ ACADEMIC INTEGRITY + CITATION GENERATOR ══════════ -->
+<section id="integrity" class="py-16 px-4 bg-gray-50">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="text-red-600 text-xs font-bold uppercase tracking-widest">Academic Integrity</span>
+      <h2 class="text-3xl font-black text-gray-900 mt-2">학문적 진실성 & 인용 생성기</h2>
+      <p class="text-gray-500 text-sm mt-2">IB의 핵심 가치 — 모든 작업은 자신의 것이어야 합니다</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Integrity Info -->
+      <div class="space-y-5">
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+          <h3 class="font-bold text-gray-900 text-lg mb-4 flex items-center gap-2">⚖️ 학문적 진실성 원칙</h3>
+          <p class="text-sm text-gray-600 mb-4">IB는 학문적 진실성을 핵심 가치로 여깁니다. 모든 평가 작업은 학생 자신의 아이디어와 표현이어야 하며, 타인의 작업을 인용할 때는 반드시 출처를 밝혀야 합니다.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="bg-green-50 rounded-xl p-4 border border-green-100">
+              <div class="font-bold text-green-800 text-sm mb-2">✅ 허용 행위</div>
+              <ul class="space-y-1 text-xs text-green-700">
+                <li>• 자신의 아이디어로 글쓰기</li>
+                <li>• 출처 명시 후 인용·참조</li>
+                <li>• 친구에게 아이디어 토론</li>
+                <li>• 교사·사서 도움 요청</li>
+                <li>• AI를 연구 보조 도구로 활용 후 명시</li>
+              </ul>
+            </div>
+            <div class="bg-red-50 rounded-xl p-4 border border-red-100">
+              <div class="font-bold text-red-800 text-sm mb-2">❌ 금지 행위 (부정행위)</div>
+              <ul class="space-y-1 text-xs text-red-700">
+                <li>• 표절 (출처 없이 타인 글 복사)</li>
+                <li>• AI 생성 텍스트를 자신의 글로 제출</li>
+                <li>• 타인 작업 대신 제출 (공모)</li>
+                <li>• 자기표절 (이전 작업 재제출)</li>
+                <li>• 데이터 위조·조작</li>
+              </ul>
+            </div>
+          </div>
+          <div class="mt-4 bg-orange-50 rounded-xl p-4 border border-orange-200 text-sm text-orange-800">
+            <strong>AI 사용 지침:</strong> AI 도구(ChatGPT 등)로 생성한 내용을 자신의 글로 제출하는 것은 IB 규정 위반입니다. AI를 아이디어 탐색·자료 검토·피드백 수단으로 사용한 경우 EE RPPF에 반드시 명시해야 합니다.
+          </div>
+        </div>
+        <!-- APA Quick Reference -->
+        <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+          <h3 class="font-bold text-gray-900 text-lg mb-4">📋 인용 형식 빠른 참조</h3>
+          <div class="flex gap-2 mb-4">
+            <button onclick="showCiteRef('apa')" id="cr-apa" class="tab-btn active text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200">APA 7th</button>
+            <button onclick="showCiteRef('mla')" id="cr-mla" class="tab-btn text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-600">MLA 9th</button>
+            <button onclick="showCiteRef('chi')" id="cr-chi" class="tab-btn text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-600">Chicago</button>
+          </div>
+          <div id="cite-ref-body" class="space-y-3 text-sm"></div>
+        </div>
+      </div>
+      <!-- Citation Generator -->
+      <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <h3 class="font-bold text-gray-900 text-lg mb-4 flex items-center gap-2">⚡ 자동 인용 생성기</h3>
+        <div class="flex gap-2 mb-4 flex-wrap">
+          <button onclick="setCiteType('book')" id="ct-book" class="tab-btn active text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200">📚 도서</button>
+          <button onclick="setCiteType('journal')" id="ct-journal" class="tab-btn text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-600">📰 저널</button>
+          <button onclick="setCiteType('web')" id="ct-web" class="tab-btn text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-600">🌐 웹사이트</button>
+        </div>
+        <div class="flex gap-2 mb-4">
+          <select id="cite-fmt" class="flex-1 text-xs border border-gray-200 rounded-lg px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <option value="apa">APA 7th Edition</option>
+            <option value="mla">MLA 9th Edition</option>
+            <option value="chicago">Chicago 17th Edition</option>
+          </select>
+        </div>
+        <!-- Book fields -->
+        <div id="fields-book" class="space-y-3">
+          <input id="b-author" placeholder="저자 (성, 이름 또는 영문: Last, First)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="b-year" placeholder="출판연도 (예: 2021)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="b-title" placeholder="도서 제목" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="b-pub" placeholder="출판사 (예: Penguin Books)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="b-city" placeholder="출판 도시 (MLA·Chicago 전용)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+        </div>
+        <!-- Journal fields -->
+        <div id="fields-journal" class="space-y-3 hidden">
+          <input id="j-author" placeholder="저자 (성, 이름)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="j-year" placeholder="출판연도" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="j-atitle" placeholder="논문 제목" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="j-jname" placeholder="저널명 (이탤릭)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <div class="grid grid-cols-3 gap-2">
+            <input id="j-vol" placeholder="권(Volume)" class="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <input id="j-iss" placeholder="호(Issue)" class="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <input id="j-pp" placeholder="페이지 (예: 12-34)" class="text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          </div>
+          <input id="j-doi" placeholder="DOI (선택, 예: 10.1000/xyz123)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+        </div>
+        <!-- Web fields -->
+        <div id="fields-web" class="space-y-3 hidden">
+          <input id="w-author" placeholder="저자 (없으면 빈칸)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="w-year" placeholder="게시연도 (없으면 n.d.)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="w-title" placeholder="페이지·기사 제목" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="w-site" placeholder="웹사이트 이름" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="w-url" placeholder="URL (https://...)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <input id="w-date" placeholder="접속일 (예: 2026년 6월 7일)" class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+        </div>
+        <button onclick="generateCitation()" class="w-full mt-4 bg-ib-blue hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-sm transition">인용 생성하기</button>
+        <div id="cite-result" class="hidden mt-4">
+          <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+            <div class="flex justify-between items-start gap-2 mb-2">
+              <span class="text-xs font-bold text-gray-500 uppercase" id="cite-fmt-label"></span>
+              <button onclick="copyCitation()" class="text-xs text-blue-600 hover:text-blue-800 font-bold border border-blue-200 px-3 py-1 rounded-lg hover:bg-blue-50 transition flex-shrink-0">복사 📋</button>
+            </div>
+            <p id="cite-text" class="text-sm text-gray-800 font-mono leading-relaxed"></p>
+          </div>
+          <p id="copy-msg" class="hidden text-xs text-green-600 font-bold text-center mt-2">✓ 클립보드에 복사되었습니다!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ MYP GLOBAL CONTEXTS ══════════ -->
+<section id="global" class="py-16 px-4 bg-ib-navy">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="text-ib-gold text-xs font-bold uppercase tracking-widest">MYP Global Contexts</span>
+      <h2 class="text-3xl font-black text-white mt-2">세계적 맥락별 추천 도서</h2>
+      <p class="text-blue-200 text-sm mt-2">MYP 6가지 세계적 맥락에 맞는 도서와 정보원을 탐색하세요</p>
+    </div>
+    <!-- Tabs -->
+    <div class="flex flex-wrap gap-2 justify-center mb-8" id="gc-tabs"></div>
+    <!-- Panels -->
+    <div id="gc-panels"></div>
+  </div>
+</section>
+
+<!-- ══════════ IB LEARNER PROFILE ══════════ -->
+<section id="profile" class="py-16 px-4 bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="text-ib-blue text-xs font-bold uppercase tracking-widest">IB Learner Profile</span>
+      <h2 class="text-3xl font-black text-gray-900 mt-2">IB 학습자상 10가지</h2>
+      <p class="text-gray-500 text-sm mt-2">IB 교육이 추구하는 이상적인 학습자의 모습 — 클릭하면 상세 정보를 볼 수 있습니다</p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4" id="profile-grid"></div>
+  </div>
+</section>
+
+<!-- Learner Profile modal -->
+<div id="prof-modal" class="modal-wrap fixed inset-0 bg-black/60 z-50 items-center justify-center p-4" onclick="if(event.target===this)closeProfModal()">
+  <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl p-6 fade-up">
+    <div id="prof-modal-body"></div>
+    <button onclick="closeProfModal()" class="w-full mt-5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl">닫기</button>
+  </div>
+</div>
+
+<!-- ══════════ QUEST TRACKER ══════════ -->
+<section id="quest" class="py-16 px-4 bg-gray-50">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="text-ib-gold text-xs font-bold uppercase tracking-widest">Quest Tracker</span>
+      <h2 class="text-3xl font-black text-gray-900 mt-2">IB 학습 퀘스트</h2>
+      <p class="text-gray-500 text-sm mt-2">독서와 실천 활동을 기록하고 포인트를 쌓아보세요!</p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <div class="bg-gradient-to-r from-ib-navy to-ib-blue rounded-2xl p-6 mb-5 flex items-center justify-between">
+        <div>
+          <p class="text-blue-200 text-xs font-bold mb-1">현재 등급</p>
+          <p id="q-rank" class="text-white font-black text-lg">🐣 수습 사서</p>
+          <p id="q-score" class="text-ib-gold font-black text-4xl mt-1">0 pt</p>
+        </div>
+        <div id="q-badge" class="text-7xl">🌱</div>
+      </div>
+      <div class="bg-gray-100 rounded-xl p-4 mb-5">
+        <div class="flex justify-between text-xs text-gray-500 mb-2"><span>다음 등급까지</span><span id="q-next">300pt 필요</span></div>
+        <div class="bg-gray-200 rounded-full h-3 overflow-hidden"><div id="q-bar" class="bg-gradient-to-r from-blue-500 to-ib-gold h-full rounded-full transition-all duration-500" style="width:0%"></div></div>
+      </div>
+      <div id="q-secret" class="hidden bg-yellow-100 border-2 border-dashed border-yellow-400 rounded-xl p-4 mb-5 text-center">
+        <div class="text-2xl mb-2">🔓</div>
+        <p class="font-bold text-yellow-800">비밀 미션 해제!</p>
+        <p class="text-yellow-700 text-sm mt-1">사서 선생님께 가서 <strong>"탐구는 나의 힘!"</strong>이라고 외치고 특별 스탬프를 받으세요!</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border border-gray-100 space-y-3 mb-6">
+        <h4 class="font-bold text-gray-800 text-sm">새 실천 기록하기</h4>
+        <select id="q-profile" class="w-full text-sm border-2 border-gray-200 rounded-xl px-3 py-2.5 bg-white focus:border-blue-400 outline-none">
+          <option value="탐구하는 사람">🔍 탐구하는 사람</option><option value="지식이 많은 사람">📖 지식이 많은 사람</option><option value="생각하는 사람">💡 생각하는 사람</option><option value="소통하는 사람">🗣️ 소통하는 사람</option><option value="원칙을 지키는 사람">⚖️ 원칙을 지키는 사람</option><option value="열린 마음을 가진 사람">🌍 열린 마음을 가진 사람</option><option value="배려하는 사람">🤗 배려하는 사람</option><option value="도전하는 사람">🎯 도전하는 사람</option><option value="균형 잡힌 사람">⚖️ 균형 잡힌 사람</option><option value="성찰하는 사람">🪞 성찰하는 사람</option>
+        </select>
+        <input id="q-book" placeholder="읽은 도서 제목 또는 활동 이름" class="w-full text-sm border-2 border-gray-200 rounded-xl px-3 py-2.5 focus:border-blue-400 outline-none">
+        <textarea id="q-action" placeholder="오늘의 실천 아이디어나 배운 점을 기록하세요…" class="w-full text-sm border-2 border-gray-200 rounded-xl px-3 py-2.5 focus:border-blue-400 outline-none h-20 resize-none"></textarea>
+        <button onclick="addQuest()" class="w-full bg-gradient-to-r from-ib-navy to-ib-blue text-white font-bold py-3 rounded-xl text-sm active:scale-95 transition">실천 기록하기 (+100점)</button>
+      </div>
+      <div>
+        <h4 class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2">나의 실천 로그 <span id="q-count" class="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-0.5 rounded-full">0</span></h4>
+        <div id="q-empty" class="text-center py-8 text-gray-400"><div class="text-4xl mb-2">📋</div><p class="text-sm">아직 기록이 없습니다. 첫 번째 실천을 기록해 보세요!</p></div>
+        <ul id="q-list" class="space-y-3"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ LIBRARY INFO ══════════ -->
+<section id="info" class="py-16 px-4 bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="text-ib-blue text-xs font-bold uppercase tracking-widest">Library Info</span>
+      <h2 class="text-3xl font-black text-gray-900 mt-2">도서관 이용 안내</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+        <div class="w-12 h-12 bg-blue-100 rounded-xl grid place-items-center text-2xl mb-4">🕐</div>
+        <h3 class="font-bold text-gray-900 text-lg mb-4">운영 시간</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-gray-600">월 – 금</span><span class="font-bold">08:00 – 18:00</span></div>
+          <div class="flex justify-between"><span class="text-gray-600">토요일</span><span class="font-bold">09:00 – 13:00</span></div>
+          <div class="flex justify-between"><span class="text-gray-600">일·공휴일</span><span class="font-bold text-red-500">휴관</span></div>
+          <div class="mt-3 bg-green-50 rounded-lg p-3 text-xs text-green-700">🟢 현재 운영 중</div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+        <div class="w-12 h-12 bg-yellow-100 rounded-xl grid place-items-center text-2xl mb-4">📋</div>
+        <h3 class="font-bold text-gray-900 text-lg mb-4">대출 규정</h3>
+        <ul class="space-y-2 text-sm text-gray-600">
+          <li>• 1인당 최대 <strong class="text-gray-900">5권</strong></li>
+          <li>• 대출 기간: <strong class="text-gray-900">2주 (14일)</strong></li>
+          <li>• 1회 연장 가능 (반납일 이전)</li>
+          <li>• 연체: 하루당 1일 대출 정지</li>
+          <li>• EE 참고도서: <strong class="text-gray-900">4주</strong> (사서 문의)</li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+        <div class="w-12 h-12 bg-green-100 rounded-xl grid place-items-center text-2xl mb-4">📞</div>
+        <h3 class="font-bold text-gray-900 text-lg mb-4">문의·예약</h3>
+        <div class="space-y-2 text-sm text-gray-700">
+          <div class="bg-gray-50 rounded-xl p-3 space-y-1.5">
+            <div class="flex items-center gap-2">📧 library@school.ib.edu</div>
+            <div class="flex items-center gap-2">📍 본관 2층 도서관</div>
+            <div class="flex items-center gap-2">💬 실시간 채팅 (운영 중)</div>
+          </div>
+        </div>
+        <button class="w-full mt-3 bg-ib-blue hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-sm transition" onclick="alert('사서 선생님께 직접 문의해 주세요.')">상담 예약</button>
+      </div>
+    </div>
+    <!-- Notices -->
+    <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+      <h3 class="font-bold text-gray-900 text-lg mb-5">📢 공지사항</h3>
+      <div class="space-y-3">
+        <div class="flex items-start gap-4 p-4 bg-blue-50 rounded-xl border-l-4 border-blue-500"><div class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded flex-shrink-0">신규</div><div><div class="font-bold text-gray-900 text-sm">EE 자료 조사 워크숍</div><div class="text-gray-500 text-xs mt-0.5">2026년 6월 15일 (월) 16:00 | 도서관 세미나실</div><div class="text-gray-600 text-sm mt-1">효과적인 학술 자료 검색과 인용 방법을 배웁니다.</div></div></div>
+        <div class="flex items-start gap-4 p-4 bg-yellow-50 rounded-xl border-l-4 border-yellow-400"><div class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded flex-shrink-0">이벤트</div><div><div class="font-bold text-gray-900 text-sm">IB 독서 챌린지 2026 모집</div><div class="text-gray-500 text-xs mt-0.5">2026년 6월 – 7월</div><div class="text-gray-600 text-sm mt-1">여름방학 독서 목표를 설정하고 완독 챌린지에 도전하세요!</div></div></div>
+        <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl border-l-4 border-gray-300"><div class="bg-gray-100 text-gray-600 text-xs font-bold px-2 py-1 rounded flex-shrink-0">안내</div><div><div class="font-bold text-gray-900 text-sm">신규 도서 입고 완료</div><div class="text-gray-500 text-xs mt-0.5">2026년 5월 30일</div><div class="text-gray-600 text-sm mt-1">IB 과목별 최신 참고서 및 MYP 세계적 맥락 관련 도서 87권 입고.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="bg-ib-navy py-12 px-4">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <div>
+        <div class="flex items-center gap-3 mb-4"><div class="w-9 h-9 bg-ib-gold rounded-lg grid place-items-center text-lg">📚</div><div class="text-white font-bold text-sm">IB MYP 학습자 도서관</div></div>
+        <p class="text-blue-200 text-sm leading-relaxed max-w-xs">모든 MYP 학습자의 탐구 여정을 지원합니다. 지식을 탐구하고, 성장하고, 세계 시민으로 나아가세요.</p>
+      </div>
+      <div>
+        <h4 class="text-white font-bold mb-4 text-sm">빠른 메뉴</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#subjects" class="text-blue-300 hover:text-white transition">과목별 자료</a></li>
+          <li><a href="#ee" class="text-blue-300 hover:text-white transition">EE 지원 센터</a></li>
+          <li><a href="#integrity" class="text-blue-300 hover:text-white transition">인용 생성기</a></li>
+          <li><a href="#global" class="text-blue-300 hover:text-white transition">세계적 맥락</a></li>
+          <li><a href="#quest" class="text-blue-300 hover:text-white transition">학습 퀘스트</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-bold mb-4 text-sm">도서관 정보</h4>
+        <ul class="space-y-2 text-sm text-blue-300">
+          <li>📍 본관 2층</li>
+          <li>⏰ 평일 08:00 – 18:00</li>
+          <li>📧 library@school.ib.edu</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-blue-800 pt-6 text-center text-blue-400 text-xs">© 2026 IB MYP Learner Library. IB 학습자상은 국제 바칼로레아 기구(IBO)의 상표입니다.</div>
+  </div>
+</footer>
+
+<!-- ══════════ JAVASCRIPT ══════════ -->
+<script>
+// ── Data ──────────────────────────────────────────────────────────────
+const subjectData = [
+  { id:'g1', icon:'📜', group:'Group 1', name:'언어와 문학', en:'Language & Literature', color:'red',
+    tags:['한국어','English','문학 분석'],
+    books:[
+      {t:'소설이란 무엇인가',a:'E.M. 포스터',d:'서사 구조와 인물 분석의 입문서'},
+      {t:'문학이론 입문',a:'테리 이글턴',d:'마르크스·구조주의·포스트모던 문학 비평'},
+      {t:'1984',a:'조지 오웰',d:'전체주의와 언어·권력 관계'},
+      {t:'파친코',a:'이민진',d:'정체성·역사·가족을 다룬 IB 추천 소설'},
+      {t:'시적 언어의 혁명',a:'줄리아 크리스테바',d:'언어와 의미 생성의 철학적 탐구'},
+    ],
+    sources:['JSTOR — 문학 비평 저널','MLA International Bibliography','한국학술정보(RISS) 국문학 분야']
+  },
+  { id:'g2', icon:'🗣️', group:'Group 2', name:'언어 습득', en:'Language Acquisition', color:'orange',
+    tags:['외국어','회화','문화'],
+    books:[
+      {t:'언어는 어떻게 배우는가',a:'패트시 라이트바운',d:'언어 습득 이론의 핵심 교재'},
+      {t:'인간 언어의 이야기',a:'존 맥호터',d:'언어의 진화와 다양성'},
+      {t:'영어 교수법',a:'제레미 해머',d:'제2언어 교수 전략'},
+      {t:'문화 간 소통',a:'피터 애드거',d:'다문화 의사소통과 오해 극복'},
+    ],
+    sources:['Ethnologue (언어 데이터베이스)','Language Learning 저널','TED Talks (언어·문화 주제)']
+  },
+  { id:'g3', icon:'🌍', group:'Group 3', name:'개인과 사회', en:'Individuals & Societies', color:'yellow',
+    tags:['역사','경제','지리','심리'],
+    books:[
+      {t:'사피엔스',a:'유발 하라리',d:'인류 역사의 거시적 관점'},
+      {t:'총, 균, 쇠',a:'재레드 다이아몬드',d:'문명 발달의 지리적·환경적 요인'},
+      {t:'경제학의 역설',a:'하준 창',d:'글로벌 경제의 불평등 구조 비판'},
+      {t:'공정하다는 착각',a:'마이클 샌델',d:'능력주의와 사회 정의'},
+      {t:'생각에 관한 생각',a:'다니엘 카너먼',d:'인지 편향과 행동경제학'},
+    ],
+    sources:['Our World in Data','EconLit (경제학 DB)','UN Data & Statistics']
+  },
+  { id:'g4', icon:'🔬', group:'Group 4', name:'과학', en:'Sciences', color:'green',
+    tags:['물리','화학','생물','환경'],
+    books:[
+      {t:'코스모스',a:'칼 세이건',d:'우주와 과학의 역사'},
+      {t:'이기적 유전자',a:'리처드 도킨스',d:'진화론의 현대적 재해석'},
+      {t:'A Brief History of Time',a:'스티븐 호킹',d:'시간과 우주론 입문'},
+      {t:'침묵의 봄',a:'레이첼 카슨',d:'환경 오염과 생태계 경고'},
+      {t:'페르마의 마지막 정리',a:'사이먼 싱',d:'수학과 과학의 경계를 넘나드는 이야기'},
+    ],
+    sources:['arXiv (물리·생물 프리프린트)','PubMed (생명과학)','Royal Society Publishing']
+  },
+  { id:'g5', icon:'📐', group:'Group 5', name:'수학', en:'Mathematics', color:'blue',
+    tags:['Analysis','Applications','통계'],
+    books:[
+      {t:'수학의 확실성',a:'모리스 클라인',d:'수학 역사와 철학적 기초'},
+      {t:'어떻게 문제를 풀 것인가',a:'조지 폴리아',d:'수학적 사고와 문제 해결 전략'},
+      {t:'통계의 함정',a:'대럴 허프',d:'통계 오용과 비판적 해석'},
+      {t:'넛지',a:'탈러 & 선스타인',d:'행동경제학과 수학적 확률'},
+    ],
+    sources:['Wolfram MathWorld','Khan Academy (수학)','GeoGebra (시각화 도구)']
+  },
+  { id:'g6', icon:'🎨', group:'Group 6', name:'예술', en:'The Arts', color:'purple',
+    tags:['시각 예술','음악','연극','무용'],
+    books:[
+      {t:'예술이란 무엇인가',a:'톨스토이',d:'예술의 본질과 목적에 관한 고전'},
+      {t:'Ways of Seeing',a:'존 버거',d:'시각 예술의 사회적·정치적 맥락'},
+      {t:'음악의 정서',a:'레너드 마이어',d:'음악 지각과 감정의 관계'},
+      {t:'연극의 역사',a:'마틴 배니엄',d:'동서양 연극 전통 비교'},
+    ],
+    sources:['Grove Music Online','ARTstor (디지털 이미지 DB)','MoMA 온라인 컬렉션']
+  },
+];
+
+const featuredBooks = [
+  {t:'사피엔스',a:'유발 하라리',e:'🦴',c:'bg-orange-100',cat:'humanities',d:'인류의 역사'},
+  {t:'코스모스',a:'칼 세이건',e:'🌌',c:'bg-blue-100',cat:'science',d:'우주와 과학'},
+  {t:'1984',a:'조지 오웰',e:'👁️',c:'bg-gray-100',cat:'humanities',d:'디스토피아 고전'},
+  {t:'총, 균, 쇠',a:'재레드 다이아몬드',e:'🌾',c:'bg-green-100',cat:'ee',d:'문명 발달의 비밀'},
+  {t:'이기적 유전자',a:'리처드 도킨스',e:'🧬',c:'bg-red-100',cat:'science',d:'진화론 재해석'},
+  {t:'공정하다는 착각',a:'마이클 샌델',e:'⚖️',c:'bg-purple-100',cat:'humanities',d:'능력주의 비판'},
+  {t:'침묵의 봄',a:'레이첼 카슨',e:'🌿',c:'bg-teal-100',cat:'ee',d:'환경 운동의 시작'},
+  {t:'A Brief History of Time',a:'스티븐 호킹',e:'⏳',c:'bg-indigo-100',cat:'science',d:'시간과 우주론'},
+  {t:'파친코',a:'이민진',e:'🎰',c:'bg-pink-100',cat:'humanities',d:'재일 한국인의 서사'},
+  {t:'생각에 관한 생각',a:'다니엘 카너먼',e:'💡',c:'bg-yellow-100',cat:'ee',d:'인지 편향 연구'},
+];
+
+const profileData = [
+  {e:'🔍',n:'탐구하는 사람',en:'Inquirer',d:'호기심을 키우고 탐구 기술을 개발합니다. 혼자서도, 함께도 배우는 것을 즐기며 배움에 대한 열정을 평생 지속합니다.',bk:['왜 세계의 절반은 굶주리는가','생각에 관한 생각']},
+  {e:'📖',n:'지식이 많은 사람',en:'Knowledgeable',d:'지역적·세계적으로 중요한 개념과 주제를 탐구하며 다양한 분야에 걸쳐 폭넓은 지식을 쌓습니다.',bk:['코스모스','총, 균, 쇠']},
+  {e:'💡',n:'생각하는 사람',en:'Thinker',d:'복잡한 문제를 이해하기 위해 비판적·창의적 사고력을 발휘하고 이성적·윤리적 결정을 내립니다.',bk:['공정하다는 착각','생각에 관한 생각']},
+  {e:'🗣️',n:'소통하는 사람',en:'Communicator',d:'여러 언어와 방법으로 자신의 아이디어를 자신 있게 표현하고 다른 사람의 관점을 경청합니다.',bk:['비폭력 대화','말의 품격']},
+  {e:'⚖️',n:'원칙을 지키는 사람',en:'Principled',d:'강한 도덕 원칙으로 정직하고 공정하게 행동하며 자신의 행동에 책임을 집니다.',bk:['정의란 무엇인가','1984']},
+  {e:'🌍',n:'열린 마음의 사람',en:'Open-minded',d:'자신의 문화를 소중히 하면서도 다른 사람의 가치관과 전통에 열린 마음으로 다가갑니다.',bk:['사피엔스','파친코']},
+  {e:'🤗',n:'배려하는 사람',en:'Caring',d:'공감과 연민을 보여주며 타인의 삶과 세상에 긍정적 변화를 가져오기 위해 헌신합니다.',bk:['이타적 유전자','공감의 시대']},
+  {e:'🎯',n:'도전하는 사람',en:'Risk-taker',d:'불확실한 상황에서도 용기 있게 새로운 아이디어에 도전하고 독립적으로 변화를 탐색합니다.',bk:['린 스타트업','실패의 과학']},
+  {e:'⚖️',n:'균형 잡힌 사람',en:'Balanced',d:'지적·신체적·정서적 균형의 중요성을 이해하고 자신과 타인의 안녕을 위해 이를 유지합니다.',bk:['Deep Work','몸과 마음의 과학']},
+  {e:'🪞',n:'성찰하는 사람',en:'Reflective',d:'세계와 자신의 경험을 깊이 생각하며 강점과 약점을 이해해 지속적으로 성장합니다.',bk:['성찰하는 삶','EE 성찰 저널']},
+];
+
+const globalContexts = [
+  { id:'id-rel', short:'정체성과 관계', full:'Identities and Relationships', emoji:'🧬',
+    desc:'자아, 정체성, 관계, 소속감을 탐구합니다. 개인과 집단이 어떻게 형성되고 서로 영향을 주는지 이해합니다.',
+    books:[
+      {t:'나는 누구인가',a:'리처드 데이비드 프레히트',d:'정체성의 철학적 탐구'},
+      {t:'파친코',a:'이민진',d:'세대 간 정체성과 소속감'},
+      {t:'성장과 심리',a:'장 피아제',d:'인지 발달과 자아 형성'},
+      {t:'마음의 사회',a:'마빈 민스키',d:'인간 마음과 자아의 구조'},
+    ],
+    sources:['APA PsycINFO (심리학)','Sociology Source','한국청소년정책연구원']
+  },
+  { id:'cult-exp', short:'문화적 표현', full:'Personal and Cultural Expression', emoji:'🎨',
+    desc:'개인과 문화가 어떻게 자신을 표현하는지, 창의성과 미적 감각이 어떻게 발전하는지 탐구합니다.',
+    books:[
+      {t:'Ways of Seeing',a:'존 버거',d:'시각 예술의 사회적 맥락'},
+      {t:'문화의 해석',a:'클리퍼드 기어츠',d:'문화 인류학의 고전'},
+      {t:'예술이란 무엇인가',a:'톨스토이',d:'예술의 본질과 목적'},
+      {t:'한국 문화의 힘',a:'이어령',d:'한국 문화의 세계적 맥락'},
+    ],
+    sources:['ARTstor (미술 이미지 DB)','Grove Music Online','한국민족문화대백과사전']
+  },
+  { id:'time-space', short:'시간·공간·장소', full:'Orientation in Space and Time', emoji:'🗺️',
+    desc:'역사·지리·이주·문명 발전 등 시간과 공간 속에서 인간이 어떻게 자신을 위치 짓는지 탐구합니다.',
+    books:[
+      {t:'사피엔스',a:'유발 하라리',d:'인류 역사의 거시적 관점'},
+      {t:'총, 균, 쇠',a:'재레드 다이아몬드',d:'문명 발달의 지리적 요인'},
+      {t:'대이동',a:'폴라 포드',d:'인류 이주의 역사'},
+      {t:'지리의 힘',a:'팀 마샬',d:'지리가 세계를 어떻게 결정하는가'},
+    ],
+    sources:['National Geographic 온라인','World History Encyclopedia','OECD iLibrary (지역 데이터)']
+  },
+  { id:'sci-tech', short:'과학기술 혁신', full:'Scientific and Technical Innovation', emoji:'🔬',
+    desc:'과학적 원리와 기술 혁신이 인간 사회와 자연 환경에 미치는 영향을 탐구합니다.',
+    books:[
+      {t:'코스모스',a:'칼 세이건',d:'과학적 사고의 역사'},
+      {t:'특이점이 온다',a:'레이 커즈와일',d:'기술 가속과 미래'},
+      {t:'이기적 유전자',a:'리처드 도킨스',d:'생물학적 혁신의 메커니즘'},
+      {t:'A Brief History of Time',a:'스티븐 호킹',d:'물리학의 최전선'},
+      {t:'생명이란 무엇인가',a:'에르빈 슈뢰딩거',d:'물리학과 생물학의 경계'},
+    ],
+    sources:['arXiv (물리·CS)','PubMed (생명과학)','IEEE Xplore (기술 저널)']
+  },
+  { id:'global-sust', short:'세계화·지속가능성', full:'Globalization and Sustainability', emoji:'🌱',
+    desc:'세계화가 환경·사회·경제에 미치는 영향과 지속 가능한 미래를 위한 방향을 탐구합니다.',
+    books:[
+      {t:'침묵의 봄',a:'레이첼 카슨',d:'환경 운동의 시발점'},
+      {t:'도넛 경제학',a:'케이트 레이워스',d:'지속 가능 경제 모델'},
+      {t:'기후 위기와 불평등',a:'제이슨 히켈',d:'기후 정의와 글로벌 격차'},
+      {t:'지구를 위한 경제학',a:'헤르만 데일리',d:'생태 경제학 입문'},
+    ],
+    sources:['UN Environment Programme','Our World in Data','IPCC (기후 보고서)']
+  },
+  { id:'fair-dev', short:'공정성과 발전', full:'Fairness and Development', emoji:'⚖️',
+    desc:'사회 정의, 인권, 개발의 불평등을 탐구하고 더 공정한 세상을 향한 방향을 모색합니다.',
+    books:[
+      {t:'공정하다는 착각',a:'마이클 샌델',d:'능력주의와 사회 정의'},
+      {t:'왜 세계의 절반은 굶주리는가',a:'장 지글러',d:'세계 기아와 식량 정치'},
+      {t:'경제학의 역설',a:'하준 창',d:'글로벌 불평등 구조'},
+      {t:'21세기 자본',a:'토마 피케티',d:'자본 불평등의 역사와 해법'},
+      {t:'자유로운 개발',a:'아마르티아 센',d:'개발과 자유의 관계'},
+    ],
+    sources:['Human Rights Watch 보고서','World Bank Open Data','Amnesty International']
+  },
+];
+
+// ── Render Functions ───────────────────────────────────────────────────
+const colorMap = {
+  red:'bg-red-100 text-red-600', orange:'bg-orange-100 text-orange-600',
+  yellow:'bg-yellow-100 text-yellow-700', green:'bg-green-100 text-green-700',
+  blue:'bg-blue-100 text-blue-600', purple:'bg-purple-100 text-purple-600'
+};
+const borderMap = {
+  red:'border-red-200', orange:'border-orange-200', yellow:'border-yellow-200',
+  green:'border-green-200', blue:'border-blue-200', purple:'border-purple-200'
+};
+
+function renderSubjects() {
+  document.getElementById('subject-cards').innerHTML = subjectData.map(s => `
+    <div class="card-hover bg-white rounded-2xl shadow-sm border border-gray-100 p-5 cursor-pointer" onclick="openSubjModal('${s.id}')">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 ${colorMap[s.color].split(' ')[0]} rounded-xl grid place-items-center text-2xl flex-shrink-0">${s.icon}</div>
+        <div class="flex-1 min-w-0">
+          <div class="text-xs font-bold ${colorMap[s.color].split(' ')[1]} uppercase tracking-wider mb-1">${s.group}</div>
+          <h3 class="font-bold text-gray-900 text-base">${s.name}</h3>
+          <p class="text-gray-500 text-xs">${s.en}</p>
+          <div class="mt-3 flex flex-wrap gap-1.5">${s.tags.map(t=>`<span class="${colorMap[s.color].split(' ')[0]} ${colorMap[s.color].split(' ')[1]} text-xs px-2 py-0.5 rounded-full">${t}</span>`).join('')}</div>
+        </div>
+        <svg class="w-4 h-4 text-gray-300 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openSubjModal(id) {
+  const s = subjectData.find(x=>x.id===id);
+  const tc = colorMap[s.color].split(' ')[1];
+  document.getElementById('subj-modal-body').innerHTML = `
+    <div class="flex items-center gap-3 mb-5"><div class="text-4xl">${s.icon}</div><div><h3 class="font-black text-gray-900 text-xl">${s.name}</h3><div class="${tc} text-sm font-medium">${s.en}</div></div></div>
+    <div class="mb-5">
+      <h4 class="font-bold text-gray-700 text-sm mb-3">📚 추천 도서</h4>
+      <ul class="space-y-2">${s.books.map(b=>`<li class="bg-gray-50 rounded-xl p-3 text-sm"><div class="font-bold text-gray-900">${b.t}</div><div class="text-gray-500 text-xs">저자: ${b.a} · ${b.d}</div></li>`).join('')}</ul>
+    </div>
+    <div>
+      <h4 class="font-bold text-gray-700 text-sm mb-3">🔗 핵심 정보원</h4>
+      <ul class="space-y-2">${s.sources.map(src=>`<li class="flex items-center gap-2 text-sm text-gray-700 bg-blue-50 rounded-lg p-2.5"><span>🔍</span>${src}</li>`).join('')}</ul>
+    </div>
+  `;
+  document.getElementById('subj-modal').classList.add('open');
+}
+function closeSubjModal() { document.getElementById('subj-modal').classList.remove('open'); }
+
+// Books filter
+function renderBooks(filter) {
+  ['all','science','humanities','ee'].forEach(f => {
+    const b = document.getElementById('fb-'+f);
+    if(b){ b.classList.toggle('active', f===filter); b.classList.toggle('bg-white',f!==filter); b.classList.toggle('text-gray-600',f!==filter); }
+  });
+  const data = filter==='all' ? featuredBooks : featuredBooks.filter(b=>b.cat===filter);
+  document.getElementById('books-grid').innerHTML = data.map(b=>`
+    <div class="card-hover bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer" onclick="alert('📚 ${b.t}\\n저자: ${b.a}\\n${b.d}\\n\\n대출 가능 여부는 사서 선생님께 문의하세요.')">
+      <div class="h-36 ${b.c} grid place-items-center text-6xl">${b.e}</div>
+      <div class="p-4"><div class="font-bold text-gray-900 text-sm leading-tight mb-1">${b.t}</div><div class="text-gray-500 text-xs">${b.a}</div><div class="mt-1 text-gray-600 text-xs">${b.d}</div></div>
+    </div>
+  `).join('');
+}
+function filterBooks(f) { renderBooks(f); }
+
+// ── Global Contexts ────────────────────────────────────────────────────
+function renderGlobalContexts() {
+  const tabs = document.getElementById('gc-tabs');
+  const panels = document.getElementById('gc-panels');
+  tabs.innerHTML = globalContexts.map((g,i)=>`
+    <button id="gct-${i}" onclick="switchGC(${i})" class="tab-btn ${i===0?'active':'bg-white/10 text-blue-100 border-white/20'} border text-xs font-bold px-4 py-2 rounded-xl">${g.emoji} ${g.short}</button>
+  `).join('');
+  panels.innerHTML = globalContexts.map((g,i)=>`
+    <div id="gcp-${i}" class="gc-panel ${i===0?'active':''} fade-up">
+      <div class="bg-white/10 backdrop-blur rounded-2xl p-6 border border-white/20">
+        <div class="flex items-start gap-4 mb-5">
+          <div class="text-5xl">${g.emoji}</div>
+          <div>
+            <h3 class="font-black text-white text-xl">${g.full}</h3>
+            <div class="text-blue-200 text-sm mt-1">${g.desc}</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div>
+            <h4 class="font-bold text-ib-gold text-sm mb-3">📚 추천 도서</h4>
+            <div class="space-y-2">${g.books.map(b=>`
+              <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+                <div class="font-bold text-white text-sm">${b.t}</div>
+                <div class="text-blue-200 text-xs mt-0.5">저자: ${b.a}</div>
+                <div class="text-blue-300 text-xs mt-0.5">${b.d}</div>
+              </div>
+            `).join('')}</div>
+          </div>
+          <div>
+            <h4 class="font-bold text-ib-gold text-sm mb-3">🔗 신뢰할 수 있는 정보원</h4>
+            <div class="space-y-2">${g.sources.map(s=>`
+              <div class="bg-white/10 rounded-xl p-3 border border-white/10 flex items-center gap-3">
+                <span class="text-lg">🔍</span>
+                <span class="text-blue-100 text-sm">${s}</span>
+              </div>
+            `).join('')}</div>
+            <div class="mt-4 bg-ib-gold/20 border border-ib-gold/30 rounded-xl p-4">
+              <div class="font-bold text-ib-gold text-sm mb-1">💡 EE 활용 팁</div>
+              <div class="text-blue-100 text-xs leading-relaxed">이 맥락의 주제로 EE를 작성할 때는 위 정보원에서 1차 자료를 확보하고, 특정 시간·장소·현상에 집중한 좁은 연구 질문을 설정하세요.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+function switchGC(idx) {
+  document.querySelectorAll('.gc-panel').forEach((p,i)=>{
+    p.classList.toggle('active',i===idx);
+  });
+  document.querySelectorAll('[id^="gct-"]').forEach((b,i)=>{
+    b.classList.toggle('active',i===idx);
+    b.classList.toggle('bg-white/10',i!==idx);
+    b.classList.toggle('text-blue-100',i!==idx);
+    b.classList.toggle('border-white/20',i!==idx);
+  });
+}
+
+// ── Learner Profile ────────────────────────────────────────────────────
+function renderProfiles() {
+  document.getElementById('profile-grid').innerHTML = profileData.map((p,i)=>`
+    <div class="card-hover bg-white rounded-2xl shadow-sm border border-gray-100 p-4 text-center cursor-pointer" onclick="openProfModal(${i})">
+      <div class="text-4xl mb-2">${p.e}</div>
+      <div class="font-bold text-gray-900 text-sm">${p.n}</div>
+      <div class="text-gray-400 text-xs mt-0.5">${p.en}</div>
+    </div>
+  `).join('');
+}
+function openProfModal(i) {
+  const p = profileData[i];
+  document.getElementById('prof-modal-body').innerHTML = `
+    <div class="text-center mb-4"><div class="text-6xl mb-3">${p.e}</div><h3 class="font-black text-gray-900 text-xl">${p.n}</h3><div class="text-blue-500 text-sm font-medium">${p.en}</div></div>
+    <div class="bg-blue-50 rounded-xl p-4 mb-4 text-sm text-blue-900 leading-relaxed">${p.d}</div>
+    <h4 class="font-bold text-gray-700 text-sm mb-3">📚 이 학습자상과 관련된 추천 도서</h4>
+    <ul class="space-y-2">${p.bk.map(b=>`<li class="bg-gray-50 rounded-lg p-2.5 text-sm text-gray-700">📚 ${b}</li>`).join('')}</ul>
+  `;
+  document.getElementById('prof-modal').classList.add('open');
+}
+function closeProfModal() { document.getElementById('prof-modal').classList.remove('open'); }
+
+// ── Search ─────────────────────────────────────────────────────────────
+const allSearchItems = [
+  ...featuredBooks.map(b=>({title:b.t, sub:b.a+' · '+b.d, emoji:b.e, color:b.c})),
+  ...globalContexts.flatMap(g=>g.books.map(b=>({title:b.t, sub:b.a+' · '+b.d+' ['+g.short+']', emoji:g.emoji, color:'bg-blue-50'}))),
+];
+function runSearch() {
+  const q = document.getElementById('hero-q').value.trim().toLowerCase();
+  if(!q) return;
+  const hits = allSearchItems.filter(x=>x.title.toLowerCase().includes(q)||x.sub.toLowerCase().includes(q));
+  const panel = document.getElementById('search-panel');
+  document.getElementById('search-label').textContent = `"${q}" 검색 결과 ${hits.length}건`;
+  document.getElementById('search-out').innerHTML = hits.length
+    ? hits.slice(0,10).map(h=>`<div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl"><div class="w-10 h-10 ${h.color} rounded-xl grid place-items-center text-2xl flex-shrink-0">${h.emoji}</div><div><div class="font-bold text-gray-900 text-sm">${h.title}</div><div class="text-gray-500 text-xs">${h.sub}</div></div></div>`).join('')
+    : `<div class="col-span-2 text-center py-6 text-gray-400 text-sm">검색 결과가 없습니다. 사서 선생님께 문의하세요.</div>`;
+  panel.classList.remove('hidden');
+  panel.scrollIntoView({behavior:'smooth'});
+}
+function qs(q) { document.getElementById('hero-q').value=q; runSearch(); }
+
+// ── Citation Generator ─────────────────────────────────────────────────
+let citeType = 'book';
+function setCiteType(t) {
+  citeType = t;
+  ['book','journal','web'].forEach(x=>{
+    document.getElementById('fields-'+x).classList.toggle('hidden',x!==t);
+    const b=document.getElementById('ct-'+x);
+    b.classList.toggle('active',x===t);
+    b.classList.toggle('bg-white',x!==t); b.classList.toggle('text-gray-600',x!==t);
+  });
+  document.getElementById('cite-result').classList.add('hidden');
+}
+function generateCitation() {
+  const fmt = document.getElementById('cite-fmt').value;
+  let text = '';
+  if(citeType==='book') {
+    const au=document.getElementById('b-author').value.trim();
+    const yr=document.getElementById('b-year').value.trim();
+    const ti=document.getElementById('b-title').value.trim();
+    const pu=document.getElementById('b-pub').value.trim();
+    const ci=document.getElementById('b-city').value.trim();
+    if(!au||!yr||!ti||!pu){alert('저자, 연도, 제목, 출판사를 입력해주세요.');return;}
+    if(fmt==='apa') text=`${au} (${yr}). <em>${ti}</em>. ${pu}.`;
+    else if(fmt==='mla') text=`${au}. <em>${ti}</em>. ${ci?ci+': ':''}${pu}, ${yr}.`;
+    else text=`${au}. <em>${ti}</em>. ${ci?ci+': ':''}${pu}, ${yr}.`;
+  } else if(citeType==='journal') {
+    const au=document.getElementById('j-author').value.trim();
+    const yr=document.getElementById('j-year').value.trim();
+    const at=document.getElementById('j-atitle').value.trim();
+    const jn=document.getElementById('j-jname').value.trim();
+    const vo=document.getElementById('j-vol').value.trim();
+    const is=document.getElementById('j-iss').value.trim();
+    const pp=document.getElementById('j-pp').value.trim();
+    const doi=document.getElementById('j-doi').value.trim();
+    if(!au||!yr||!at||!jn){alert('저자, 연도, 논문 제목, 저널명을 입력해주세요.');return;}
+    if(fmt==='apa') text=`${au} (${yr}). ${at}. <em>${jn}</em>, <em>${vo}</em>${is?'('+is+')':''}${pp?', '+pp:''}. ${doi?'https://doi.org/'+doi:''}`;
+    else if(fmt==='mla') text=`${au}. "${at}." <em>${jn}</em>, vol. ${vo}, no. ${is}, ${yr}, pp. ${pp}. ${doi?'doi:'+doi:''}`;
+    else text=`${au}. "${at}." <em>${jn}</em> ${vo}, no. ${is} (${yr}): ${pp}. ${doi?'https://doi.org/'+doi:''}`;
+  } else {
+    const au=document.getElementById('w-author').value.trim()||null;
+    const yr=document.getElementById('w-year').value.trim()||'n.d.';
+    const ti=document.getElementById('w-title').value.trim();
+    const si=document.getElementById('w-site').value.trim();
+    const ur=document.getElementById('w-url').value.trim();
+    const da=document.getElementById('w-date').value.trim();
+    if(!ti){alert('페이지 제목을 입력해주세요.');return;}
+    if(fmt==='apa') text=`${au?au+' ':''}(${yr}). ${ti}. <em>${si}</em>. ${ur}`;
+    else if(fmt==='mla') text=`${au?au+'. ':''}"${ti}." <em>${si}</em>, ${yr}, ${ur}. ${da?'Accessed '+da:''}.`;
+    else text=`${au?au+'. ':''}"${ti}." <em>${si}</em>. ${da?'Last accessed '+da+'. ':''}${ur}.`;
+  }
+  const fmtLabel = {apa:'APA 7th Edition',mla:'MLA 9th Edition',chicago:'Chicago 17th Edition'};
+  document.getElementById('cite-fmt-label').textContent = fmtLabel[fmt];
+  document.getElementById('cite-text').innerHTML = text;
+  document.getElementById('cite-result').classList.remove('hidden');
+  document.getElementById('copy-msg').classList.add('hidden');
+}
+function copyCitation() {
+  const txt = document.getElementById('cite-text').innerText;
+  navigator.clipboard.writeText(txt).then(()=>{
+    document.getElementById('copy-msg').classList.remove('hidden');
+    setTimeout(()=>document.getElementById('copy-msg').classList.add('hidden'),2500);
+  }).catch(()=>alert('복사 실패. 텍스트를 직접 선택해 복사해주세요.'));
+}
+
+// Citation reference panels
+const citeRefs = {
+  apa: [
+    {label:'도서',ex:'저자, 이. (연도). <em>도서 제목</em>. 출판사.'},
+    {label:'저널',ex:'저자, 이. (연도). 논문 제목. <em>저널명</em>, <em>권(호)</em>, 페이지. https://doi.org/xxx'},
+    {label:'웹사이트',ex:'저자, 이. (연도). 페이지 제목. <em>사이트명</em>. URL'},
+  ],
+  mla: [
+    {label:'도서',ex:'저자. <em>도서 제목</em>. 도시: 출판사, 연도.'},
+    {label:'저널',ex:'저자. "논문 제목." <em>저널명</em>, vol. 권, no. 호, 연도, pp. 페이지.'},
+    {label:'웹사이트',ex:'저자. "페이지 제목." <em>사이트명</em>, 연도, URL. Accessed 접속일.'},
+  ],
+  chi: [
+    {label:'도서',ex:'저자. <em>도서 제목</em>. 도시: 출판사, 연도.'},
+    {label:'저널',ex:'저자. "논문 제목." <em>저널명</em> 권, no. 호 (연도): 페이지.'},
+    {label:'웹사이트',ex:'저자. "페이지 제목." <em>사이트명</em>. 접속일. URL.'},
+  ]
+};
+function showCiteRef(type) {
+  ['apa','mla','chi'].forEach(t=>{
+    const b=document.getElementById('cr-'+t);
+    b.classList.toggle('active',t===type);
+    b.classList.toggle('bg-white',t!==type); b.classList.toggle('text-gray-600',t!==type);
+  });
+  document.getElementById('cite-ref-body').innerHTML = citeRefs[type].map(r=>`
+    <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+      <div class="text-xs font-bold text-gray-500 mb-1">${r.label}</div>
+      <div class="font-mono text-xs text-gray-800 leading-relaxed">${r.ex}</div>
+    </div>
+  `).join('');
+}
+
+// ── Quest Tracker ──────────────────────────────────────────────────────
+let qScore = parseInt(localStorage.getItem('ibScore'))||0;
+let qLog = JSON.parse(localStorage.getItem('ibLog'))||[];
+function updateQuest() {
+  document.getElementById('q-score').textContent = qScore+' pt';
+  let rank='🐣 수습 사서', badge='🌱', next=300, pct=Math.min((qScore/300)*100,100);
+  if(qScore>=600){rank='👑 전설의 사서';badge='🔥';next=null;pct=100;}
+  else if(qScore>=300){rank='📚 숙련된 사서';badge='🌿';next=600;pct=Math.min(((qScore-300)/300)*100,100);}
+  document.getElementById('q-rank').textContent=rank;
+  document.getElementById('q-badge').textContent=badge;
+  document.getElementById('q-bar').style.width=pct+'%';
+  document.getElementById('q-next').textContent=next?`${next-qScore}pt 더 필요`:'최고 등급 달성! 🎉';
+  if(qScore>=500){const s=document.getElementById('q-secret');s.classList.remove('hidden');s.classList.add('secret-show');}
+  renderLog();
+}
+function renderLog() {
+  const cnt=document.getElementById('q-count'); cnt.textContent=qLog.length;
+  document.getElementById('q-empty').style.display=qLog.length?'none':'block';
+  document.getElementById('q-list').innerHTML=qLog.slice().reverse().map(q=>`
+    <li class="bg-white rounded-xl p-4 border border-gray-100 text-sm shadow-sm">
+      <div class="flex items-start justify-between gap-2">
+        <div><span class="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full mb-1.5">${q.profile}</span><div class="font-bold text-gray-900">${q.book}</div><div class="text-gray-500 mt-0.5">${q.action}</div></div>
+        <div class="text-xs text-gray-400 flex-shrink-0">${q.date}</div>
+      </div>
+    </li>
+  `).join('');
+}
+function addQuest() {
+  const profile=document.getElementById('q-profile').value;
+  const book=document.getElementById('q-book').value.trim();
+  const action=document.getElementById('q-action').value.trim();
+  if(!book||!action){alert('도서 제목과 실천 내용을 모두 입력해 주세요!');return;}
+  qScore+=100;
+  qLog.push({profile,book,action,date:new Date().toLocaleDateString('ko-KR')});
+  localStorage.setItem('ibScore',qScore);
+  localStorage.setItem('ibLog',JSON.stringify(qLog));
+  document.getElementById('q-book').value='';
+  document.getElementById('q-action').value='';
+  updateQuest();
+}
+
+// ── Init ───────────────────────────────────────────────────────────────
+renderSubjects();
+renderBooks('all');
+renderGlobalContexts();
+renderProfiles();
+updateQuest();
+showCiteRef('apa');
+</script>
+</body>
+</html>
