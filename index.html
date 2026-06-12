@@ -149,6 +149,14 @@ html { scroll-behavior: smooth; }
   </div>
 </section>
 
+<!-- Book detail modal -->
+<div id="book-modal" class="modal-wrap fixed inset-0 bg-black/50 z-50 items-center justify-center p-4" onclick="if(event.target===this)closeBookModal()">
+  <div class="bg-white rounded-2xl max-w-sm w-full shadow-2xl">
+    <div id="book-modal-body" class="p-6"></div>
+    <div class="px-6 pb-6"><button onclick="closeBookModal()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 rounded-xl">닫기</button></div>
+  </div>
+</div>
+
 <!-- Subject modal -->
 <div id="subj-modal" class="modal-wrap fixed inset-0 bg-black/50 z-50 items-center justify-center p-4" onclick="if(event.target===this)closeSubjModal()">
   <div class="bg-white rounded-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl">
@@ -434,7 +442,8 @@ html { scroll-behavior: smooth; }
         </div>
         <div id="craap-result" class="mt-5 bg-white rounded-xl p-4 border border-teal-200 text-center hidden">
           <div id="craap-score-txt" class="font-black text-2xl mb-1"></div>
-          <div id="craap-verdict" class="text-sm font-medium"></div>
+          <div id="craap-verdict" class="text-sm font-medium mb-3"></div>
+          <button onclick="resetCraap()" class="text-xs text-teal-600 hover:text-teal-800 font-bold border border-teal-200 px-4 py-1.5 rounded-lg hover:bg-teal-50 transition">↺ 초기화</button>
         </div>
       </div>
 
@@ -606,7 +615,10 @@ html { scroll-behavior: smooth; }
         <button onclick="addQuest()" class="w-full bg-gradient-to-r from-ib-navy to-ib-blue text-white font-bold py-3 rounded-xl text-sm active:scale-95 transition">실천 기록하기 (+100점)</button>
       </div>
       <div>
-        <h4 class="font-bold text-gray-700 text-sm mb-3 flex items-center gap-2">나의 실천 로그 <span id="q-count" class="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-0.5 rounded-full">0</span></h4>
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="font-bold text-gray-700 text-sm flex items-center gap-2">나의 실천 로그 <span id="q-count" class="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-0.5 rounded-full">0</span></h4>
+          <button id="q-reset-btn" onclick="resetQuest()" class="hidden text-xs text-red-500 hover:text-red-700 font-bold border border-red-200 px-3 py-1 rounded-lg hover:bg-red-50 transition">전체 초기화</button>
+        </div>
         <div id="q-empty" class="text-center py-8 text-gray-400"><div class="text-4xl mb-2">📋</div><p class="text-sm">아직 기록이 없습니다. 첫 번째 실천을 기록해 보세요!</p></div>
         <ul id="q-list" class="space-y-3"></ul>
       </div>
@@ -629,7 +641,7 @@ html { scroll-behavior: smooth; }
           <div class="flex justify-between"><span class="text-gray-600">월 – 금</span><span class="font-bold">08:00 – 18:00</span></div>
           <div class="flex justify-between"><span class="text-gray-600">토요일</span><span class="font-bold">09:00 – 13:00</span></div>
           <div class="flex justify-between"><span class="text-gray-600">일·공휴일</span><span class="font-bold text-red-500">휴관</span></div>
-          <div class="mt-3 bg-green-50 rounded-lg p-3 text-xs text-green-700">🟢 현재 운영 중</div>
+          <div id="open-status" class="mt-3 rounded-lg p-3 text-xs"></div>
         </div>
       </div>
       <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
@@ -913,14 +925,35 @@ function renderBooks(filter) {
     if(b){ b.classList.toggle('active', f===filter); b.classList.toggle('bg-white',f!==filter); b.classList.toggle('text-gray-600',f!==filter); }
   });
   const data = filter==='all' ? featuredBooks : featuredBooks.filter(b=>b.cat===filter);
-  document.getElementById('books-grid').innerHTML = data.map(b=>`
-    <div class="card-hover bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer" onclick="alert('📚 ${b.t}\\n저자: ${b.a}\\n${b.d}\\n\\n대출 가능 여부는 사서 선생님께 문의하세요.')">
+  window._booksData = data;
+  document.getElementById('books-grid').innerHTML = data.map((b,i)=>`
+    <div class="card-hover bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer" onclick="openBookModal(${i})">
       <div class="h-36 ${b.c} grid place-items-center text-6xl">${b.e}</div>
       <div class="p-4"><div class="font-bold text-gray-900 text-sm leading-tight mb-1">${b.t}</div><div class="text-gray-500 text-xs">${b.a}</div><div class="mt-1 text-gray-600 text-xs">${b.d}</div></div>
     </div>
   `).join('');
 }
 function filterBooks(f) { renderBooks(f); }
+function openBookModal(i) {
+  const b = window._booksData[i];
+  const catLabel = {science:'과학', humanities:'인문·사회', ee:'EE 추천'};
+  document.getElementById('book-modal-body').innerHTML = `
+    <div class="text-center mb-5">
+      <div class="w-24 h-24 ${b.c} rounded-2xl grid place-items-center text-6xl mx-auto mb-4">${b.e}</div>
+      <h3 class="font-black text-gray-900 text-xl leading-tight">${b.t}</h3>
+      <div class="text-gray-500 text-sm mt-1">저자: ${b.a}</div>
+    </div>
+    <div class="bg-gray-50 rounded-xl p-4 mb-4 text-sm text-gray-700 leading-relaxed">${b.d}</div>
+    <div class="flex items-center gap-2 mb-4">
+      <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full">${catLabel[b.cat]||b.cat}</span>
+    </div>
+    <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-3 text-xs text-yellow-800">
+      📌 대출 가능 여부 및 위치는 사서 선생님께 문의하세요.
+    </div>
+  `;
+  document.getElementById('book-modal').classList.add('open');
+}
+function closeBookModal() { document.getElementById('book-modal').classList.remove('open'); }
 
 // ── Global Contexts ────────────────────────────────────────────────────
 function renderGlobalContexts() {
@@ -1004,8 +1037,10 @@ function closeProfModal() { document.getElementById('prof-modal').classList.remo
 
 // ── Search ─────────────────────────────────────────────────────────────
 const allSearchItems = [
-  ...featuredBooks.map(b=>({title:b.t, sub:b.a+' · '+b.d, emoji:b.e, color:b.c})),
-  ...globalContexts.flatMap(g=>g.books.map(b=>({title:b.t, sub:b.a+' · '+b.d+' ['+g.short+']', emoji:g.emoji, color:'bg-blue-50'}))),
+  ...featuredBooks.map(b=>({title:b.t, sub:b.a+' · '+b.d, emoji:b.e, color:b.c, link:'#books'})),
+  ...globalContexts.flatMap(g=>g.books.map(b=>({title:b.t, sub:b.a+' · '+b.d+' ['+g.short+']', emoji:g.emoji, color:'bg-blue-50', link:'#global'}))),
+  ...subjectData.flatMap(s=>s.books.map(b=>({title:b.t, sub:b.a+' · '+b.d+' ['+s.name+']', emoji:s.icon, color:colorMap[s.color].split(' ')[0], link:'#subjects'}))),
+  ...subjectData.map(s=>({title:s.name, sub:s.en+' · '+s.group, emoji:s.icon, color:colorMap[s.color].split(' ')[0], link:'#subjects'})),
 ];
 function runSearch() {
   const q = document.getElementById('hero-q').value.trim().toLowerCase();
@@ -1013,8 +1048,9 @@ function runSearch() {
   const hits = allSearchItems.filter(x=>x.title.toLowerCase().includes(q)||x.sub.toLowerCase().includes(q));
   const panel = document.getElementById('search-panel');
   document.getElementById('search-label').textContent = `"${q}" 검색 결과 ${hits.length}건`;
-  document.getElementById('search-out').innerHTML = hits.length
-    ? hits.slice(0,10).map(h=>`<div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl"><div class="w-10 h-10 ${h.color} rounded-xl grid place-items-center text-2xl flex-shrink-0">${h.emoji}</div><div><div class="font-bold text-gray-900 text-sm">${h.title}</div><div class="text-gray-500 text-xs">${h.sub}</div></div></div>`).join('')
+  const unique = hits.filter((h,i,a)=>a.findIndex(x=>x.title===h.title&&x.sub===h.sub)===i);
+  document.getElementById('search-out').innerHTML = unique.length
+    ? unique.slice(0,12).map(h=>`<a href="${h.link||'#'}" class="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-xl transition"><div class="w-10 h-10 ${h.color} rounded-xl grid place-items-center text-2xl flex-shrink-0">${h.emoji}</div><div><div class="font-bold text-gray-900 text-sm">${h.title}</div><div class="text-gray-500 text-xs">${h.sub}</div></div></a>`).join('')
     : `<div class="col-span-2 text-center py-6 text-gray-400 text-sm">검색 결과가 없습니다. 사서 선생님께 문의하세요.</div>`;
   panel.classList.remove('hidden');
   panel.scrollIntoView({behavior:'smooth'});
@@ -1056,9 +1092,20 @@ function generateCitation() {
     const pp=document.getElementById('j-pp').value.trim();
     const doi=document.getElementById('j-doi').value.trim();
     if(!au||!yr||!at||!jn){alert('저자, 연도, 논문 제목, 저널명을 입력해주세요.');return;}
-    if(fmt==='apa') text=`${au} (${yr}). ${at}. <em>${jn}</em>, <em>${vo}</em>${is?'('+is+')':''}${pp?', '+pp:''}. ${doi?'https://doi.org/'+doi:''}`;
-    else if(fmt==='mla') text=`${au}. "${at}." <em>${jn}</em>, vol. ${vo}, no. ${is}, ${yr}, pp. ${pp}. ${doi?'doi:'+doi:''}`;
-    else text=`${au}. "${at}." <em>${jn}</em> ${vo}, no. ${is} (${yr}): ${pp}. ${doi?'https://doi.org/'+doi:''}`;
+    const volPart = vo ? `<em>${vo}</em>` : '';
+    const issPart = is ? `(${is})` : '';
+    const ppPart  = pp ? `, ${pp}` : '';
+    const doiApa  = doi ? ` https://doi.org/${doi}` : '';
+    const doiMla  = doi ? ` doi:${doi}` : '';
+    const volMla  = vo ? `, vol. ${vo}` : '';
+    const issMla  = is ? `, no. ${is}` : '';
+    const ppMla   = pp ? `, pp. ${pp}` : '';
+    const volChi  = vo ? ` ${vo}` : '';
+    const issChi  = is ? `, no. ${is}` : '';
+    const ppChi   = pp ? `: ${pp}` : '';
+    if(fmt==='apa') text=`${au} (${yr}). ${at}. <em>${jn}</em>, ${volPart}${issPart}${ppPart}.${doiApa}`;
+    else if(fmt==='mla') text=`${au}. "${at}." <em>${jn}</em>${volMla}${issMla}, ${yr}${ppMla}.${doiMla}`;
+    else text=`${au}. "${at}." <em>${jn}</em>${volChi}${issChi} (${yr})${ppChi}.${doiApa}`;
   } else {
     const au=document.getElementById('w-author').value.trim()||null;
     const yr=document.getElementById('w-year').value.trim()||'n.d.';
@@ -1067,9 +1114,9 @@ function generateCitation() {
     const ur=document.getElementById('w-url').value.trim();
     const da=document.getElementById('w-date').value.trim();
     if(!ti){alert('페이지 제목을 입력해주세요.');return;}
-    if(fmt==='apa') text=`${au?au+' ':''}(${yr}). ${ti}. <em>${si}</em>. ${ur}`;
-    else if(fmt==='mla') text=`${au?au+'. ':''}"${ti}." <em>${si}</em>, ${yr}, ${ur}. ${da?'Accessed '+da:''}.`;
-    else text=`${au?au+'. ':''}"${ti}." <em>${si}</em>. ${da?'Last accessed '+da+'. ':''}${ur}.`;
+    if(fmt==='apa') text=`${au?au+' ':''}(${yr}). ${ti}. <em>${si?si+'. ':''}${ur}</em>${da?' Retrieved '+da:''}`;
+    else if(fmt==='mla') text=`${au?au+'. ':''}"${ti}." <em>${si||ur}</em>, ${yr}, ${ur}.${da?' Accessed '+da+'.':''}`;
+    else text=`${au?au+'. ':''}"${ti}." <em>${si||'Web'}</em>.${da?' Last accessed '+da+'.':''} ${ur}.`;
   }
   const fmtLabel = {apa:'APA 7th Edition',mla:'MLA 9th Edition',chicago:'Chicago 17th Edition'};
   document.getElementById('cite-fmt-label').textContent = fmtLabel[fmt];
@@ -1135,14 +1182,21 @@ function updateQuest() {
 function renderLog() {
   const cnt=document.getElementById('q-count'); cnt.textContent=qLog.length;
   document.getElementById('q-empty').style.display=qLog.length?'none':'block';
-  document.getElementById('q-list').innerHTML=qLog.slice().reverse().map(q=>`
-    <li class="bg-white rounded-xl p-4 border border-gray-100 text-sm shadow-sm">
+  const resetBtn=document.getElementById('q-reset-btn');
+  if(resetBtn) resetBtn.classList.toggle('hidden', qLog.length===0);
+  const reversed = qLog.slice().reverse();
+  document.getElementById('q-list').innerHTML=reversed.map((q,ri)=>{
+    const realIdx = qLog.length - 1 - ri;
+    return `<li class="bg-white rounded-xl p-4 border border-gray-100 text-sm shadow-sm">
       <div class="flex items-start justify-between gap-2">
         <div><span class="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full mb-1.5">${q.profile}</span><div class="font-bold text-gray-900">${q.book}</div><div class="text-gray-500 mt-0.5">${q.action}</div></div>
-        <div class="text-xs text-gray-400 flex-shrink-0">${q.date}</div>
+        <div class="flex flex-col items-end gap-2 flex-shrink-0">
+          <span class="text-xs text-gray-400">${q.date}</span>
+          <button onclick="deleteQuest(${realIdx})" class="text-xs text-red-400 hover:text-red-600 transition" title="삭제">✕</button>
+        </div>
       </div>
-    </li>
-  `).join('');
+    </li>`;
+  }).join('');
 }
 function addQuest() {
   const profile=document.getElementById('q-profile').value;
@@ -1155,6 +1209,21 @@ function addQuest() {
   localStorage.setItem('ibLog',JSON.stringify(qLog));
   document.getElementById('q-book').value='';
   document.getElementById('q-action').value='';
+  updateQuest();
+}
+
+function deleteQuest(idx) {
+  if(!confirm('이 기록을 삭제할까요?')) return;
+  qScore = Math.max(0, qScore - 100);
+  qLog.splice(idx, 1);
+  localStorage.setItem('ibScore', qScore);
+  localStorage.setItem('ibLog', JSON.stringify(qLog));
+  updateQuest();
+}
+function resetQuest() {
+  if(!confirm('모든 퀘스트 기록을 초기화할까요?')) return;
+  qScore = 0; qLog = [];
+  localStorage.removeItem('ibScore'); localStorage.removeItem('ibLog');
   updateQuest();
 }
 
@@ -1177,6 +1246,11 @@ function updateCraap() {
   document.getElementById('craap-score-txt').textContent = `${score} / 5 ${v.icon}`;
   document.getElementById('craap-verdict').className = `text-sm font-medium ${v.color}`;
   document.getElementById('craap-verdict').textContent = v.txt;
+}
+
+function resetCraap() {
+  document.querySelectorAll('.craap-chk').forEach(c => c.checked = false);
+  document.getElementById('craap-result').classList.add('hidden');
 }
 
 // ── Info Literacy Quiz ─────────────────────────────────────────────────
@@ -1275,6 +1349,26 @@ function quizReset() {
   quizRender();
 }
 
+// ── Library Hours Status ───────────────────────────────────────────────
+function updateLibraryStatus() {
+  const el = document.getElementById('open-status');
+  if (!el) return;
+  const now = new Date();
+  const day = now.getDay(); // 0=Sun, 6=Sat
+  const h = now.getHours(), m = now.getMinutes();
+  const mins = h * 60 + m;
+  let open = false;
+  if (day >= 1 && day <= 5) open = mins >= 8*60 && mins < 18*60;
+  else if (day === 6) open = mins >= 9*60 && mins < 13*60;
+  if (open) {
+    el.className = 'mt-3 bg-green-50 rounded-lg p-3 text-xs text-green-700';
+    el.textContent = '🟢 현재 운영 중';
+  } else {
+    el.className = 'mt-3 bg-red-50 rounded-lg p-3 text-xs text-red-600';
+    el.textContent = day === 0 || day === 6 && !open ? '🔴 현재 휴관 (주말)' : '🔴 현재 휴관 (운영 시간 외)';
+  }
+}
+
 // ── Init ───────────────────────────────────────────────────────────────
 renderSubjects();
 renderBooks('all');
@@ -1283,6 +1377,7 @@ renderProfiles();
 updateQuest();
 showCiteRef('apa');
 quizRender();
+updateLibraryStatus();
 </script>
 </body>
 </html>
