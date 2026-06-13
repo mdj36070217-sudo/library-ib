@@ -1,0 +1,11 @@
+{
+  "name": "library-ib",
+  "version": "1.0.0",
+  "description": "IB MYP Learner Library static site",
+  "scripts": {
+    "lint": "html-validate index.html"
+  },
+  "devDependencies": {
+    "html-validate": "^9.0.0"
+  }
+}
